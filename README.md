@@ -16,7 +16,7 @@ Swoft Event Component
 - composer command
 
 ```bash
-composer require swoft/event
+composer require swoft-fork/event
 ```
 
 ## Resources
