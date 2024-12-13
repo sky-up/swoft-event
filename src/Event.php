@@ -23,7 +23,7 @@ use function unserialize;
  *
  * @since 2.0
  */
-class Event implements EventInterface, ArrayAccess, Serializable
+class Event implements EventInterface, ArrayAccess
 {
     /**
      * @var string Event name
@@ -278,36 +278,53 @@ class Event implements EventInterface, ArrayAccess, Serializable
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function serialize(): string
+    public function __serialize(): array
     {
-        return serialize([$this->name, $this->params, $this->stopPropagation]);
+        return [$this->name, $this->params, $this->stopPropagation];
     }
 
     /**
-     * Unserialize the event.
-     *
-     * @param string $serialized The serialized event.
-     *
-     * @return  void
+     * @param array $data
      */
-    public function unserialize($serialized): void
+    public function __unserialize(array $data): void
     {
         [
             $this->name,
             $this->params,
             $this->stopPropagation
-        ] = unserialize($serialized, ['allowed_classes' => false]);
+        ] = $data;
+    }
+
+    /**
+     * @deprecated since PHP 8.2 use __serialize() instead
+     * @return string
+     */
+    #[\ReturnTypeWillChange]
+    public function serialize(): string
+    {
+        return serialize($this->__serialize());
+    }
+
+    /**
+     * @deprecated since PHP 8.2 use __unserialize() instead
+     * @param string $serialized The serialized event.
+     * @return void
+     */
+    public function unserialize($serialized): void
+    {
+        $this->__unserialize(unserialize($serialized, ['allowed_classes' => false]));
     }
 
     /**
      * Tell if the given event argument exists.
      *
-     * @param string $name The argument name.
+     * @param mixed $name The argument name.
      *
-     * @return  boolean  True if it exists, false otherwise.
+     * @return boolean True if it exists, false otherwise.
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($name): bool
     {
         return $this->hasParam($name);
@@ -316,11 +333,12 @@ class Event implements EventInterface, ArrayAccess, Serializable
     /**
      * Get an event argument value.
      *
-     * @param string $name The argument name.
+     * @param mixed $name The argument name.
      *
-     * @return  mixed  The argument value or null if not existing.
+     * @return mixed The argument value or null if not existing.
      */
-    public function offsetGet($name)
+    #[\ReturnTypeWillChange]
+    public function offsetGet($name): mixed
     {
         return $this->getParam($name);
     }
@@ -328,12 +346,13 @@ class Event implements EventInterface, ArrayAccess, Serializable
     /**
      * Set the value of an event argument.
      *
-     * @param string $name  The argument name.
-     * @param mixed  $value The argument value.
+     * @param mixed $name  The argument name.
+     * @param mixed $value The argument value.
      *
-     * @return  void
+     * @return void
      * @throws InvalidArgumentException
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($name, $value): void
     {
         $this->setParam($name, $value);
@@ -342,10 +361,11 @@ class Event implements EventInterface, ArrayAccess, Serializable
     /**
      * Remove an event argument.
      *
-     * @param string $name The argument name.
+     * @param mixed $name The argument name.
      *
-     * @return  void
+     * @return void
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($name): void
     {
         $this->removeParam($name);
