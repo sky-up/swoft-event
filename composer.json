@@ -14,7 +14,7 @@
   "homepage": "https://github.com/sky-up/swoft-event",
   "license": "Apache-2.0",
   "require": {
-    "php": ">8.0",
+    "php": ">8.3",
     "swoft-fork/stdlib": "~2.1.0"
   },
   "autoload": {

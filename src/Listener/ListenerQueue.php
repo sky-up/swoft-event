@@ -117,7 +117,7 @@ class ListenerQueue implements IteratorAggregate, Countable
      *
      * @return  int|null  The listener priority if it exists, null otherwise.
      */
-    public function getPriority($listener, int $default = null): ?int
+    public function getPriority($listener, ?int $default = null): ?int
     {
         if ($this->store->contains($listener)) {
             // @see self::add(). attach as: `[priority, counter value]`
@@ -135,7 +135,7 @@ class ListenerQueue implements IteratorAggregate, Countable
      *
      * @return mixed
      */
-    public function getLevel($listener, int $default = null)
+    public function getLevel($listener, ?int $default = null)
     {
         return $this->getPriority($listener, $default);
     }
